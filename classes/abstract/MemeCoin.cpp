@@ -1,0 +1,4 @@
+#include "MemeCoin.h"
+
+
+// todo

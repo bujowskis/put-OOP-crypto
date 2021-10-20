@@ -1,0 +1,4 @@
+#include "SeriousCoin.h"
+
+
+// todo
