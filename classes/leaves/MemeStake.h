@@ -25,13 +25,13 @@ public:
      * string named_after - name of the meme it's named af                                                                                                                                                                                                                                                                                                                                                              ter
      * int tokens_val - amount of tokens needed to be a validator
      */
-    MemeStake(string name, char symbol, int amount, float exchange_rate, string authors, bool can_create,
+    MemeStake(string name, char symbol, float amount, float exchange_rate, string authors, bool can_create,
               string named_after, int tokens_val) :
             Blockchain(name, symbol, amount, exchange_rate, authors, can_create),
             MemeCoin(name, symbol, amount, exchange_rate, authors, can_create, named_after),
             ProofOfStake(name, symbol, amount, exchange_rate, authors, can_create, tokens_val) { }
 
-    virtual ~MemeStake() { } // nothing to do here
+    virtual ~MemeStake() { }
 
     /* Prints detailed info about given currency */
     void toString() {
@@ -41,7 +41,7 @@ public:
              "\n\tcurrent exchange rate: " << this->getExchangeRate() << "," <<
              "\n\tauthors: " << this->getAuthors() << "," <<
              "\n\tcan new coins be created: " << this->getCanCreate() << "," <<
-             "\n\tis named after " << this->getNamedAfter() << " meme," <<
+             "\n\tis named after \"" << this->getNamedAfter() << "\" meme," <<
              "\n\tno. of tokens needed to be a validator: " << this->getTokensVal() << "\n\n";
     }
 };
