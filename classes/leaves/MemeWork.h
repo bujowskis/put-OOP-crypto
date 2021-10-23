@@ -2,8 +2,13 @@
 #define MEMEWORK_H
 
 
-class MemeWork {
-    // todo
+#include "../abstract/MemeCoin.h"
+#include "../abstract/ProofOfWork.h"
+
+
+class MemeWork : public MemeCoin, public ProofOfWork {
+public:
+    void toString();
 };
 
 

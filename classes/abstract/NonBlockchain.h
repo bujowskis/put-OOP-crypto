@@ -2,8 +2,14 @@
 #define NONBLOCKCHAIN_H
 
 
-class NonBlockchain {
-    // todo
+#include "Currency.h"
+
+
+class NonBlockchain : public Currency {
+private:
+    string* authority;
+public:
+    void toString(); // this will be implemented here
 };
 
 

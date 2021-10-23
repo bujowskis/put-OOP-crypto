@@ -2,8 +2,13 @@
 #define SERIOUSWORK_H
 
 
-class SeriousWork {
-    // todo
+#include "../abstract/SeriousCoin.h"
+#include "../abstract/ProofOfWork.h"
+
+
+class SeriousWork : public SeriousCoin, public ProofOfWork {
+public:
+    void toString();
 };
 
 

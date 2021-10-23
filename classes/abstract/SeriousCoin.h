@@ -2,8 +2,16 @@
 #define SERIOUSCOIN_H
 
 
-class SeriousCoin {
-    // todo
+#include "Blockchain.h"
+
+
+// extends 'virtual public' because of diamond problem in multiple inheritance
+class SeriousCoin : virtual public Blockchain {
+private:
+    int* seriousness_class;
+public:
+    virtual void toString() = 0; // it's up to leaves
+    int getSeriousnessClass() { return *(this->seriousness_class); }
 };
 
 

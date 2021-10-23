@@ -2,8 +2,13 @@
 #define SERIOUSSTAKE_H
 
 
-class SeriousStake {
-    // todo
+#include "../abstract/SeriousCoin.h"
+#include "../abstract/ProofOfStake.h"
+
+
+class SeriousStake : public SeriousCoin, public ProofOfStake {
+public:
+    void toString();
 };
 
 
