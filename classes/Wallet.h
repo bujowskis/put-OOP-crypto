@@ -5,17 +5,17 @@
 #include <string>
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include "abstract/Currency.h"
 using namespace std;
 
-
+template <class T>
 class Wallet {
 private:
     string* owner;
-    int* currencies_count;
     int* iteration;
-    Currency* currencies;
-    Currency* main_currency;
+    vector<T*>* currencies;
+    T* main_currency;
     float* prob_sell;
     float* prob_buy;
 
@@ -29,7 +29,7 @@ public:
      * float prob_sell - probability of selling a coin
      * float prob_buy - probability of buying a coin
      */
-    Wallet(string owner, Currency* currencies, Currency* main_currency, float prob_sell, float prob_buy) {
+    Wallet(string owner, vector<T*> &currencies, T* main_currency, float prob_sell, float prob_buy) {
         if ((prob_buy < 0) || (1 < prob_buy) || (prob_sell < 0) || (1 < prob_sell))
             throw invalid_argument("probability out of (0.0 - 1.0) range\n");
         if (prob_sell <= prob_buy) {
@@ -48,14 +48,10 @@ public:
         }
         this->owner = new string;
         *(this->owner) = owner;
-        this->currencies_count = new int;
-        *(this->currencies_count) = sizeof(*currencies) / sizeof(currencies[0]);
         this->iteration = new int;
         *(this->iteration) = 1;
 
-        //this->currencies = new Currency[sizeof(*currencies) / sizeof(currencies[0])];
-        //this->currencies = currencies;
-
+        this->currencies = &currencies;
         this->main_currency = main_currency;
 
         // probabilities converted to %
@@ -67,9 +63,9 @@ public:
 
     ~Wallet() {
         delete this->owner;
-        for (int i = 0; i < *currencies_count; i++)
-            delete &this->currencies[i];
-        delete this->currencies_count;
+        for (int i = 0; i < *currencies.size(); i++)
+            delete &this->currencies->at(i);
+        currencies.clear();
         delete this->iteration;
         delete this->prob_sell;
         delete this->prob_buy;
@@ -79,32 +75,32 @@ public:
     bool tradeAll() {
         bool no_coins_left = true;
         // loop over all currencies
-        for (int i = 0; i < *(this->currencies_count); i++) {
-            if (&(this->currencies[i]) == this->main_currency) {
+        for (int i = 0; i < this->currencies->size(); i++) {
+            if (this->currencies->at(i) == this->main_currency) {
                 // skip the main currency - it's not being traded for itself
                 continue;
             }
-            if (!(this->currencies[i].getAmount())) {
+            if (!(this->currencies->at(i)->getAmount())) {
                 // no coins of this currency in the wallet - skip it
                 continue;
             }
             // loop over all coins of this currency
-            for (int j = 0; j < (int) this->currencies[i].getAmount(); j++) {
+            for (int j = 0; j < (int) this->currencies->at(i)->getAmount(); j++) {
                 // buying phase
                 if ((rand() % 100) < this->pBuy()) {
-                    if (this->main_currency->getAmount() > this->currencies[i].getExchangeRate()) {
-                        this->main_currency->subAmount(this->currencies[i].getExchangeRate());
-                        this->currencies[i].addAmount(1);
+                    if (this->main_currency->getAmount() > this->currencies->at(i)->getExchangeRate()) {
+                        this->main_currency->subAmount(this->currencies->at(i)->getExchangeRate());
+                        this->currencies->at(i)->addAmount(1);
                     }
                 }
                 // selling phase
                 if ((rand() % 100) < this->pSell()) {
-                    this->currencies[i].subAmount(1);
-                    this->main_currency->addAmount(this->currencies[i].getExchangeRate());
+                    this->currencies->at(i)->subAmount(1);
+                    this->main_currency->addAmount(this->currencies->at(i)->getExchangeRate());
                 }
             }
             // simulate new exchange rate
-            this->currencies[i].simExchange();
+            this->currencies->at(i)->simExchange();
             no_coins_left = false;
         }
         return no_coins_left;
@@ -114,9 +110,9 @@ public:
     float listAll() {
         float worth_total = 0;
         cout << "iteration " << *(this->iteration) << ":\n";
-        for (int i =0; i < *(this->currencies_count); i++) {
-            this->currencies[i].list();
-            worth_total += this->currencies[i].getAmount() * this->currencies[i].getExchangeRate();
+        for (int i =0; i < this->currencies->size(); i++) {
+            this->currencies->at(i)->list();
+            worth_total += this->currencies->at(i)->getAmount() * this->currencies->at(i)->getExchangeRate();
         }
         cout << "total worth in this iteration: " << worth_total << this->main_currency->getSymbol() << "\n\n";
         *(this->iteration) += 1;
@@ -128,8 +124,8 @@ public:
         float worth_min, worth_max, worth_initial, worth_current;
 
         worth_initial = 0;
-        for (int i = 0; i < *(this->currencies_count); i++)
-            worth_initial += this->currencies[i].getAmount() * this->currencies[i].getExchangeRate();
+        for (int i = 0; i < this->currencies->size(); i++)
+            worth_initial += this->currencies->at(i)->getAmount() * this->currencies->at(i).getExchangeRate();
         worth_min = worth_initial;
         worth_max = worth_initial;
 
@@ -173,14 +169,15 @@ public:
 
     /* Prints detailed information of all currencies in the wallet */
     void toString() {
-        cout << "This wallet belongs to: " << *(this->owner) << ", the owner:\n" <<
+        cout << "This wallet belongs to " << *(this->owner) << ", the owner:\n" <<
         "\tis willing to BUY  coins with " << this->pBuy() << "% probability,\n" <<
         "\tis willing to SELL coins with " << this->pSell() << "% probability,\n" <<
         "\tuses " << this->main_currency->getName() << " as their main currency\n" <<
         "\tis interested in and will trade the following currencies:\n\n";
 
-        for (int i = 0; i < *(this->currencies_count); i++)
-            this->currencies[i].toString();
+        for (int i = 0; i < this->currencies->size(); i++)
+            this->currencies->at(i)->toString();
+            //this->currencies[i]->toString();
     }
 
     /* Returns probability of selling a coin */
