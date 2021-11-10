@@ -23,8 +23,8 @@ public:
     /*
      * Constructor of Wallet. Parameters:
      * string owner - name of the Wallet's owner
-     * Currency* currencies - list of all available currencies
-     * Currency* main_currency - currency with exchange_rate = 1; i.e. used as anchor point to buy other currencies with
+     * vector<T*> &currencies - pointer to vector of pointers of all available currencies
+     * T* main_currency - currency with exchange_rate = 1; i.e. used as anchor point to buy other currencies with
      *      and to sell other currencies for
      * float prob_sell - probability of selling a coin
      * float prob_buy - probability of buying a coin
@@ -43,7 +43,7 @@ public:
                         "\t\tdo you still want to run it? (y/n)\n\t\t";
                 cin >> should_run;
             }
-            if ((should_run == 'n') || (should_run == 'N')) // todo - check if return is needed
+            if ((should_run == 'n') || (should_run == 'N'))
                 throw "non-convergent";
         }
         this->owner = new string;
@@ -63,9 +63,9 @@ public:
 
     ~Wallet() {
         delete this->owner;
-        for (int i = 0; i < *currencies.size(); i++)
-            delete &this->currencies->at(i);
-        currencies.clear();
+        for (int i = 0; i < this->currencies->size(); i++)
+            delete this->currencies->at(i);
+        currencies->clear();
         delete this->iteration;
         delete this->prob_sell;
         delete this->prob_buy;
@@ -100,13 +100,16 @@ public:
                 }
             }
             // simulate new exchange rate
-            this->currencies->at(i)->simExchange();
+            this->currencies->at(i)->Currency::simExchange();
             no_coins_left = false;
         }
         return no_coins_left;
     }
 
-    /* Lists most important information of all currencies in the wallet */
+    /*
+     * Lists most important information of all currencies in the wallet
+     * returns the total worth of all coins in the wallet
+     */
     float listAll() {
         float worth_total = 0;
         cout << "iteration " << *(this->iteration) << ":\n";
@@ -114,7 +117,7 @@ public:
             this->currencies->at(i)->list();
             worth_total += this->currencies->at(i)->getAmount() * this->currencies->at(i)->getExchangeRate();
         }
-        cout << "total worth in this iteration: " << worth_total << this->main_currency->getSymbol() << "\n\n";
+        cout << "total worth in this iteration: " << worth_total << " " << this->main_currency->getSymbol() << "\n\n";
         *(this->iteration) += 1;
         return worth_total;
     }
@@ -125,11 +128,12 @@ public:
 
         worth_initial = 0;
         for (int i = 0; i < this->currencies->size(); i++)
-            worth_initial += this->currencies->at(i)->getAmount() * this->currencies->at(i).getExchangeRate();
+            worth_initial += this->currencies->at(i)->getAmount() * this->currencies->at(i)->getExchangeRate();
         worth_min = worth_initial;
         worth_max = worth_initial;
 
         this->toString();
+        cout << "The main currency is: " << this->main_currency->getName() << "\n";
         {
             bool useless;
             cout << "(type anything or Ctrl+D to start)\n";
@@ -147,7 +151,7 @@ public:
                 worth_max = worth_current;
         }
 
-        // todo - remove this after checking it's OK
+        // At this point, there should be no other currencies than the main one
         if (worth_current != this->main_currency->getAmount())
             throw "SOMETHING WENT REALLY WRONG\n";
 
@@ -155,7 +159,8 @@ public:
         "\tfinal worth, after selling all other coins is: " << worth_current << this->main_currency->getSymbol() <<
         ",\n" << "\tminimal worth reached was: " << worth_min << this->main_currency->getSymbol() << ",\n" <<
         "\tmaximal worth reached was: " << worth_max << this->main_currency->getSymbol() << ",\n" <<
-        "\t\tso, it was possible to gain " << worth_max - worth_current << this->main_currency->getSymbol() << ",\n\n";
+        "\t\tso, it was possible to gain " << worth_max - worth_current << this->main_currency->getSymbol() <<
+        " more,\n";
         float worth_relative = worth_current - worth_initial;
         if (worth_relative < 0) {
             worth_relative *= -1;
@@ -165,6 +170,7 @@ public:
             cout << "\toverall, the owner gained " << worth_relative << this->main_currency->getSymbol() << "\n" <<
             "\t\t(that's about " << round((worth_relative / worth_initial) * 100) << "% gain)\n";
         }
+        cout << "\n******************\n";
     }
 
     /* Prints detailed information of all currencies in the wallet */

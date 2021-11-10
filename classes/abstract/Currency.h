@@ -47,8 +47,8 @@ public:
 
     /* Lists the most important info about this currency */
     void list() {
-        cout << this->getName() << " (" << this->getSymbol() << ")\n" <<
-        "\t" << this->getAmount() << " coins, 1 coin = " << this->getExchangeRate() << "main currency coins\n";
+        cout << "\t" << this->getName() << " (" << this->getSymbol() << ")\n" <<
+        "\t\t" << this->getAmount() << " coins, 1 coin = " << this->getExchangeRate() << "\n";
     }
 
     virtual void toString() = 0; // this is up to children
@@ -89,22 +89,22 @@ public:
         int which_range = rand() % 10;
         if (which_range < 1) {
             // 0 -> 0.25-0.50
-            *(this->exchange_rate) *= ((rand() % 26) + 25) / 100;
+            *(this->exchange_rate) *= (float) ((rand() % 26) + 25) / 100;
         } else if (which_range < 3) {
             // 1-2 -> 0.51-0.75
-            *(this->exchange_rate) *= ((rand() % 25) + 51) / 100;
+            *(this->exchange_rate) *= (float) ((rand() % 25) + 51) / 100;
         } else if (which_range < 5) {
             // 3-4 -> 0.76-1.00
-            *(this->exchange_rate) *= ((rand() % 25) + 76) / 100;
+            *(this->exchange_rate) *= (float) ((rand() % 25) + 76) / 100;
         } else if (which_range < 7) {
             // 5-6 -> 1.01-2.00
-            *(this->exchange_rate) *= ((rand() % 100) + 101) / 100;
+            *(this->exchange_rate) *= (float) ((rand() % 100) + 101) / 100;
         } else if (which_range < 9) {
             // 7-8 -> 2.01-3.00
-            *(this->exchange_rate) *= ((rand() % 100) + 201) / 100;
+            *(this->exchange_rate) *= (float) ((rand() % 100) + 201) / 100;
         } else {
             // 9 -> 3.01-4.00
-            *(this->exchange_rate) *= ((rand() % 100) + 301) / 100;
+            *(this->exchange_rate) *= (float) ((rand() % 100) + 301) / 100;
         }
     }
 };

@@ -14,7 +14,7 @@ int main() {
     while (currencies_count < 1) {
         cout << "\n\tno. of currencies other than main one must be at least 1, please try again:\n\t";
         cin >> currencies_count;
-        // todo - try it
+        // non-integer argument cause funny loop, but we assume the input is right
     }
     float prob_sell;
     cout << "\nWhat's the probability of selling a coin? (0.0 - 1.0):\n\t";
@@ -44,23 +44,17 @@ int main() {
     currencies.push_back(ptr4);
     currencies.push_back(ptr5);
 
-    currencies[4]->toString();
-
     Wallet<Currency> *wallet;
     try {
-        wallet = new Wallet<Currency>(owner, currencies, currencies[0], prob_sell, prob_buy);
+        wallet = new Wallet<Currency>(owner, currencies, ptr5, prob_sell, prob_buy);
     }
     catch (...) {
         cout << "\nprogram aborted\n";
         return 0;
     }
 
-    cout << "it seems it works!\n\n";
-
-    wallet->toString();
-    wallet->listAll();
-    wallet->tradeAll();
-    wallet->toString();
+    wallet->simulate();
+    delete wallet;
 
     return 0;
 }
