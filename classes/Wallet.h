@@ -144,7 +144,8 @@ public:
         bool should_run = true;
         while (should_run) {
             should_run = !(this->tradeAll());
-            worth_current = this->listAll();
+            if (should_run)
+                worth_current = this->listAll();
             if (worth_current < worth_min)
                 worth_min = worth_current;
             if (worth_current > worth_max)
@@ -156,19 +157,20 @@ public:
             throw "SOMETHING WENT REALLY WRONG\n";
 
         cout << "\n******************\n" << "the simulation ended. Summary:\n" <<
-        "\tfinal worth, after selling all other coins is: " << worth_current << this->main_currency->getSymbol() <<
-        ",\n" << "\tminimal worth reached was: " << worth_min << this->main_currency->getSymbol() << ",\n" <<
-        "\tmaximal worth reached was: " << worth_max << this->main_currency->getSymbol() << ",\n" <<
-        "\t\tso, it was possible to gain " << worth_max - worth_current << this->main_currency->getSymbol() <<
+        "\tfinal worth, after selling all other coins is: " << worth_current << " " <<this->main_currency->getSymbol()
+        << ",\n" <<
+        "\tminimal worth reached was: " << worth_min << " " << this->main_currency->getSymbol() << ",\n" <<
+        "\tmaximal worth reached was: " << worth_max << " " << this->main_currency->getSymbol() << ",\n" <<
+        "\t\tso, it was possible to gain " << worth_max - worth_current << " " << this->main_currency->getSymbol() <<
         " more,\n";
         float worth_relative = worth_current - worth_initial;
         if (worth_relative < 0) {
             worth_relative *= -1;
-            cout << "\toverall, the owner lost " << worth_relative << this->main_currency->getSymbol() << "\n" <<
+            cout << "\toverall, the owner lost " << worth_relative << " " << this->main_currency->getSymbol() << "\n" <<
             "\t\t(that's about " << round((worth_relative / worth_initial) * 100) << "% loss)\n";
         } else {
-            cout << "\toverall, the owner gained " << worth_relative << this->main_currency->getSymbol() << "\n" <<
-            "\t\t(that's about " << round((worth_relative / worth_initial) * 100) << "% gain)\n";
+            cout << "\toverall, the owner gained " << worth_relative << " " << this->main_currency->getSymbol() <<
+            "\n" << "\t\t(that's about " << round((worth_relative / worth_initial) * 100) << "% gain)\n";
         }
         cout << "\n******************\n";
     }
