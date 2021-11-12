@@ -65,7 +65,6 @@ int main() {
     int which_type;
     for (int i = 0; i < currencies_count; i++) {
         which_type = rand() % 5;
-        cout << "randomized: " << which_type << "\n";
         switch (which_type) {
             case 0:
                 // MemeStake

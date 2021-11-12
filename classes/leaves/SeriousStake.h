@@ -35,7 +35,7 @@ public:
 
     /* Prints detailed info about given currency */
     void toString() {
-        cout << this->getName() << ", a MemeStake currency:" <<
+        cout << this->getName() << ", a SeriousStake currency:" <<
              "\n\tsymbol of this currency is \'" << this->getSymbol() << "\'," <<
              "\n\tcurrent amount: " << this->getAmount() << " coins," <<
              "\n\tcurrent exchange rate: " << this->getExchangeRate() << "," <<
